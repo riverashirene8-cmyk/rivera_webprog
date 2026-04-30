@@ -1,25 +1,41 @@
-import React from 'react';
-import './App.css';
-
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+ 
+//HomePageLayout
+import Layout from './components/Layout';
+import ArticlePage from './pages/ArticlePage';
+import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
+ 
+const routes = [
+  {
+    path: '/',
+    element: <Layout />,
+    children: [
+    {
+      path: '',
+      element: <HomePage />,
+    },
+     {
+      path: 'about',
+      element: <AboutPage />,
+    },
+     {
+      path: 'articles',
+      element: <ArticlePage />,
+    },
+    ],
+  },
+];
+ 
+const router = createBrowserRouter(routes);
+ 
 function App() {
   return (
-    <div id="center">
-      <div className="App">
-        <header className="App-header">
-          <h1>Welcome to My React App!</h1>
-          <p>
-            Name: [Shirene Rivera]<br />
-            Email: [riverashirene8@gmail.com]<br />
-            Sex: [Female]<br />
-            Birthday: [October 6, 2004]<br />
-            Age: [21 years old]<br />
-            Year: [3rd Year College]<br />
-            Other Personal Info:
-          </p>
-        </header>
-      </div>
-    </div>
+    <>
+    <RouterProvider router={router} />
+    </>
   );
 }
-
+ 
 export default App;
+
