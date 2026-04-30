@@ -13,6 +13,7 @@ function App() {
             Sex: [Female]<br />
             Birthday: [October 6, 2004]<br />
             Age: [21 years old]<br />
+            Year: [3rd Year College]<br />
             Other Personal Info:
           </p>
         </header>
