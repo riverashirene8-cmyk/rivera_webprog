@@ -46,7 +46,7 @@ const ArticlePage = () => {
                     {/* CARD 1 */}
                     <article className="rounded-3xl border-2 border-zinc-900 bg-zinc-100 p-4">
                         <img src={img1} alt="Article 1" className="w-full h-36 object-cover rounded-[1.25rem]" />
-
+git branch -D lab-act2
                         <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
                             Article 1
                         </p>
