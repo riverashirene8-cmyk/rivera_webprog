@@ -1,8 +1,8 @@
-import Button from '../components/Button';
-import homepage from "../assets/homepage.jpg";
-import home1 from "../assets/home1.png";
-import home2 from "../assets/home2.png";
-import home3 from "../assets/home3.png";
+import Button from "../../components/Button";
+import homepage from "../../assets/img/homepage.jpg";
+import home1 from "../../assets/img/home1.png";
+import home2 from "../../assets/img/home2.png";
+import home3 from "../../assets/img/home3.png";
 
 const HomePage = () => {
     return (

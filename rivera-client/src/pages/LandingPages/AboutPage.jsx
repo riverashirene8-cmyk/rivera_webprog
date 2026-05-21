@@ -1,9 +1,11 @@
-import Button from '../components/Button';
-import profileAbout from "../assets/profile_about.jpg";
-import about1 from "../assets/about1.png";
-import about2 from "../assets/about2.png";
-import about3 from "../assets/about3.png";
-import about4 from "../assets/about4.png";
+import Button from "../../components/Button";
+import profileAbout from "../../assets/img/profileabout.jpg";
+import about1 from "../../assets/img/about1.png";
+import about2 from "../../assets/img/about2.png";
+import about3 from "../../assets/img/about3.png";
+import about4 from "../../assets/img/about4.png";
+
+
 
 const AboutPage = () => {
     return (
