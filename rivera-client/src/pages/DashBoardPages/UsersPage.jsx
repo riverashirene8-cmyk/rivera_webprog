@@ -1,6 +1,6 @@
 import React from "react";
-import { Typography, Box, } from "@mui/material";
-import { DataGrid, } from "@mui/x-data-grid";
+import { Typography, Box } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 
 const rows = [
   { id: 1, firstName: "Jon", lastName: "Snow", age: 14 },
@@ -30,7 +30,9 @@ export default function UsersPage() {
           columns={columns}
           pageSizeOptions={[5]}
           initialState={{
-            pagination: { paginationModel: { pageSize: 5 } },
+            pagination: {
+              paginationModel: { pageSize: 5 },
+            },
           }}
           checkboxSelection
         />

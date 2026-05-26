@@ -3,7 +3,7 @@ import { Typography, Stack, Card, CardContent } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { PieChart } from "@mui/x-charts/PieChart";
 
-export default function ReportPage() {
+export default function ReportsPage() {
   return (
     <div>
       <Typography variant="h4" gutterBottom>
@@ -30,10 +30,12 @@ export default function ReportPage() {
       {/* BAR CHART */}
       <BarChart
         series={[
-          { data: [5, 10, 15, 20], label: "Reports" }
+          { data: [5, 10, 15, 20], label: "Reports" },
         ]}
         height={300}
-        xAxis={[{ data: ["Jan", "Feb", "Mar", "Apr"], scaleType: "band" }]}
+        xAxis={[
+          { data: ["Jan", "Feb", "Mar", "Apr"], scaleType: "band" },
+        ]}
       />
 
       {/* PIE CHART */}
