@@ -21,6 +21,21 @@ import {
 
 import 'leaflet/dist/leaflet.css';
 
+import L from 'leaflet';
+
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
+/* LEAFLET FIX */
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
+
 const columns = [
   {
     field: 'id',
@@ -52,42 +67,99 @@ const columns = [
     description: 'Generated from first and last name',
     sortable: false,
     width: 200,
-    valueGetter: (params) =>
-      `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+
+    valueGetter: (_, row) =>
+      `${row.firstName || ''} ${
+        row.lastName || ''
+      }`,
   },
 ];
 
 const rows = [
-  { id: 1, firstName: 'Jon', lastName: 'Snow', age: 14 },
-  { id: 2, firstName: 'Cersei', lastName: 'Lannister', age: 31 },
-  { id: 3, firstName: 'Jaime', lastName: 'Lannister', age: 31 },
-  { id: 4, firstName: 'Arya', lastName: 'Stark', age: 11 },
-  { id: 5, firstName: 'Daenerys', lastName: 'Targaryen', age: 25 },
-  { id: 6, firstName: 'Melisandre', lastName: 'Red Woman', age: 150 },
-  { id: 7, firstName: 'Ferrara', lastName: 'Clifford', age: 44 },
-  { id: 8, firstName: 'Rossini', lastName: 'Frances', age: 36 },
-  { id: 9, firstName: 'Harvey', lastName: 'Roxie', age: 65 },
+  {
+    id: 1,
+    firstName: 'Jon',
+    lastName: 'Snow',
+    age: 14,
+  },
+  {
+    id: 2,
+    firstName: 'Cersei',
+    lastName: 'Lannister',
+    age: 31,
+  },
+  {
+    id: 3,
+    firstName: 'Jaime',
+    lastName: 'Lannister',
+    age: 31,
+  },
+  {
+    id: 4,
+    firstName: 'Arya',
+    lastName: 'Stark',
+    age: 11,
+  },
+  {
+    id: 5,
+    firstName: 'Daenerys',
+    lastName: 'Targaryen',
+    age: 25,
+  },
+  {
+    id: 6,
+    firstName: 'Melisandre',
+    lastName: 'Red Woman',
+    age: 150,
+  },
+  {
+    id: 7,
+    firstName: 'Ferrara',
+    lastName: 'Clifford',
+    age: 44,
+  },
+  {
+    id: 8,
+    firstName: 'Rossini',
+    lastName: 'Frances',
+    age: 36,
+  },
+  {
+    id: 9,
+    firstName: 'Harvey',
+    lastName: 'Roxie',
+    age: 65,
+  },
 ];
 
 function DashboardPage() {
   const location = useLocation();
 
   const averageAge = (
-    rows.reduce((sum, row) => sum + (row.age || 0), 0) / rows.length
+    rows.reduce(
+      (sum, row) => sum + (row.age || 0),
+      0
+    ) / rows.length
   ).toFixed(1);
 
   return (
     <Box sx={{ p: 3 }}>
-      {/* Page Title */}
-      <Typography variant="h4" gutterBottom>
+      {/* PAGE TITLE */}
+      <Typography
+        variant="h4"
+        gutterBottom
+      >
         Dashboard
       </Typography>
 
-      <Typography variant="body1" sx={{ mb: 4 }}>
+      <Typography
+        variant="body1"
+        sx={{ mb: 4 }}
+      >
         Current Path: {location.pathname}
       </Typography>
 
-      {/* Summary Cards */}
+      {/* SUMMARY CARDS */}
       <Stack
         direction={{ xs: 'column', md: 'row' }}
         spacing={3}
@@ -118,8 +190,11 @@ function DashboardPage() {
         </Card>
       </Stack>
 
-      {/* Gauges */}
-      <Typography variant="h5" gutterBottom>
+      {/* GAUGES */}
+      <Typography
+        variant="h5"
+        gutterBottom
+      >
         Performance Gauges
       </Typography>
 
@@ -130,7 +205,10 @@ function DashboardPage() {
       >
         <Card>
           <CardContent>
-            <Typography variant="h6" gutterBottom>
+            <Typography
+              variant="h6"
+              gutterBottom
+            >
               Completion Rate
             </Typography>
 
@@ -144,7 +222,10 @@ function DashboardPage() {
 
         <Card>
           <CardContent>
-            <Typography variant="h6" gutterBottom>
+            <Typography
+              variant="h6"
+              gutterBottom
+            >
               User Activity
             </Typography>
 
@@ -159,8 +240,11 @@ function DashboardPage() {
         </Card>
       </Stack>
 
-      {/* Charts */}
-      <Typography variant="h5" gutterBottom>
+      {/* CHARTS */}
+      <Typography
+        variant="h5"
+        gutterBottom
+      >
         Analytics Charts
       </Typography>
 
@@ -170,7 +254,10 @@ function DashboardPage() {
         sx={{ mb: 5 }}
       >
         <Card sx={{ p: 2, flex: 1 }}>
-          <Typography variant="h6" gutterBottom>
+          <Typography
+            variant="h6"
+            gutterBottom
+          >
             Quarterly Sales
           </Typography>
 
@@ -188,7 +275,12 @@ function DashboardPage() {
             ]}
             xAxis={[
               {
-                data: ['Q1', 'Q2', 'Q3', 'Q4'],
+                data: [
+                  'Q1',
+                  'Q2',
+                  'Q3',
+                  'Q4',
+                ],
                 scaleType: 'band',
               },
             ]}
@@ -196,7 +288,10 @@ function DashboardPage() {
         </Card>
 
         <Card sx={{ p: 2 }}>
-          <Typography variant="h6" gutterBottom>
+          <Typography
+            variant="h6"
+            gutterBottom
+          >
             User Distribution
           </Typography>
 
@@ -206,9 +301,21 @@ function DashboardPage() {
             series={[
               {
                 data: [
-                  { id: 0, value: 10, label: 'Admin' },
-                  { id: 1, value: 15, label: 'Students' },
-                  { id: 2, value: 20, label: 'Teachers' },
+                  {
+                    id: 0,
+                    value: 10,
+                    label: 'Admin',
+                  },
+                  {
+                    id: 1,
+                    value: 15,
+                    label: 'Students',
+                  },
+                  {
+                    id: 2,
+                    value: 20,
+                    label: 'Teachers',
+                  },
                 ],
               },
             ]}
@@ -216,8 +323,11 @@ function DashboardPage() {
         </Card>
       </Stack>
 
-      {/* Data Table */}
-      <Typography variant="h5" gutterBottom>
+      {/* DATA TABLE */}
+      <Typography
+        variant="h5"
+        gutterBottom
+      >
         Users Overview
       </Typography>
 
@@ -244,8 +354,11 @@ function DashboardPage() {
         />
       </Box>
 
-      {/* Map Section */}
-      <Typography variant="h5" gutterBottom>
+      {/* MAP SECTION */}
+      <Typography
+        variant="h5"
+        gutterBottom
+      >
         Location Map
       </Typography>
 
@@ -270,10 +383,14 @@ function DashboardPage() {
             attribution="&copy; OpenStreetMap contributors"
           />
 
-          <Marker position={[14.6042, 120.9943]}>
+          <Marker
+            position={[14.6042, 120.9943]}
+          >
             <Popup>
-              National University - Manila <br />
-              551 F. Jhocson St, Sampaloc, Manila
+              National University - Manila
+              <br />
+              551 F. Jhocson St, Sampaloc,
+              Manila
             </Popup>
           </Marker>
         </MapContainer>

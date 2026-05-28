@@ -58,10 +58,12 @@ const dashboardNavItems = [
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
+
   transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
   }),
+
   overflowX: "hidden",
 });
 
@@ -70,6 +72,7 @@ const closedMixin = (theme) => ({
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
+
   overflowX: "hidden",
 
   width: `calc(${theme.spacing(7)} + 1px)`,
@@ -86,7 +89,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
   padding: theme.spacing(0, 1),
 
-  ...theme.mixins.toolbar,
+  minHeight: "64px",
 }));
 
 const AppBar = styled(MuiAppBar, {
@@ -96,6 +99,12 @@ const AppBar = styled(MuiAppBar, {
 
   backgroundColor: "#1976d2",
   color: "#fff",
+
+  height: "64px",
+
+  justifyContent: "center",
+
+  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
 
   transition: theme.transitions.create(
     ["width", "margin"],
@@ -125,8 +134,11 @@ const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
   width: drawerWidth,
+
   flexShrink: 0,
+
   whiteSpace: "nowrap",
+
   boxSizing: "border-box",
 
   ...(open && {
@@ -134,8 +146,16 @@ const Drawer = styled(MuiDrawer, {
 
     "& .MuiDrawer-paper": {
       ...openedMixin(theme),
+
       backgroundColor: "#fff",
+
       color: "#111",
+
+      top: 0,
+
+      height: "100vh",
+
+      borderRight: "1px solid #e0e0e0",
     },
   }),
 
@@ -144,8 +164,16 @@ const Drawer = styled(MuiDrawer, {
 
     "& .MuiDrawer-paper": {
       ...closedMixin(theme),
+
       backgroundColor: "#fff",
+
       color: "#111",
+
+      top: 0,
+
+      height: "100vh",
+
+      borderRight: "1px solid #e0e0e0",
     },
   }),
 }));
@@ -153,7 +181,7 @@ const Drawer = styled(MuiDrawer, {
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
 
-  borderRadius: theme.shape.borderRadius,
+  borderRadius: 8,
 
   backgroundColor: "rgba(255,255,255,0.15)",
 
@@ -164,6 +192,7 @@ const Search = styled("div")(({ theme }) => ({
   marginRight: theme.spacing(2),
 
   width: "100%",
+
   maxWidth: 250,
 }));
 
@@ -178,7 +207,9 @@ const SearchIconWrapper = styled("div")(
     pointerEvents: "none",
 
     display: "flex",
+
     alignItems: "center",
+
     justifyContent: "center",
   })
 );
@@ -186,10 +217,11 @@ const SearchIconWrapper = styled("div")(
 const StyledInputBase = styled(InputBase)(
   ({ theme }) => ({
     color: "#fff",
+
     width: "100%",
 
     "& .MuiInputBase-input": {
-      padding: theme.spacing(1, 1, 1, 0),
+      padding: theme.spacing(1.2, 1, 1.2, 0),
 
       paddingLeft: `calc(1em + ${theme.spacing(
         4
@@ -212,14 +244,19 @@ export default function DashLayout() {
   const [open, setOpen] = useState(true);
 
   const location = useLocation();
+
   const navigate = useNavigate();
 
   return (
     <Box
       sx={{
         display: "flex",
+
         minHeight: "100vh",
+
         backgroundColor: "#f5f7fb",
+
+        overflow: "hidden",
       }}
     >
       <CssBaseline />
@@ -243,7 +280,10 @@ export default function DashLayout() {
           <Typography
             variant="h6"
             noWrap
-            sx={{ flexGrow: 1 }}
+            sx={{
+              flexGrow: 1,
+              fontWeight: 600,
+            }}
           >
             {getPageTitle(location.pathname)}
           </Typography>
@@ -260,7 +300,14 @@ export default function DashLayout() {
             variant="outlined"
             sx={{
               color: "#fff",
+
               borderColor: "#fff",
+
+              "&:hover": {
+                borderColor: "#fff",
+                backgroundColor:
+                  "rgba(255,255,255,0.1)",
+              },
             }}
             onClick={() => navigate("/")}
           >
@@ -291,7 +338,9 @@ export default function DashLayout() {
               <ListItem
                 key={to}
                 disablePadding
-                sx={{ display: "block" }}
+                sx={{
+                  display: "block",
+                }}
               >
                 <ListItemButton
                   component={Link}
@@ -307,6 +356,23 @@ export default function DashLayout() {
                       : "center",
 
                     px: 2.5,
+
+                    "&.Mui-selected": {
+                      backgroundColor:
+                        "#e3f2fd",
+
+                      color: "#1976d2",
+
+                      "& .MuiListItemIcon-root":
+                        {
+                          color: "#1976d2",
+                        },
+                    },
+
+                    "&:hover": {
+                      backgroundColor:
+                        "#f5f5f5",
+                    },
                   }}
                 >
                   <ListItemIcon
@@ -339,10 +405,14 @@ export default function DashLayout() {
         component="main"
         sx={{
           flexGrow: 1,
+
           p: 3,
-          mt: 8,
+
+          mt: "64px",
+
           minHeight: "100vh",
-          backgroundColor: "#fff",
+
+          backgroundColor: "#f5f7fb",
         }}
       >
         <Outlet />

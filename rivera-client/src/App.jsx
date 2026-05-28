@@ -24,66 +24,36 @@ import UsersPage from "./pages/DashboardPages/UsersPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 const router = createBrowserRouter([
-  // LANDING
   {
     path: "/",
     element: <Layout />,
     errorElement: <NotFoundPage />,
     children: [
-      {
-        index: true,
-        element: <HomePage />,
-      },
-      {
-        path: "about",
-        element: <AboutPage />,
-      },
-      {
-        path: "articles",
-        element: <ArticleListPage />,
-      },
-      {
-        path: "articles/:name",
-        element: <ArticlePage />,
-      },
+      { path: "", element: <HomePage /> },
+      { path: "about", element: <AboutPage /> },
+      { path: "articles", element: <ArticleListPage /> },
+      { path: "articles/:name", element: <ArticlePage /> },
     ],
   },
 
-  // AUTH
   {
     path: "/auth",
     element: <AuthLayout />,
     errorElement: <NotFoundPage />,
     children: [
-      {
-        path: "signin",
-        element: <SignInPage />,
-      },
-      {
-        path: "signup",
-        element: <SignUpPage />,
-      },
+      { path: "signin", element: <SignInPage /> },
+      { path: "signup", element: <SignUpPage /> },
     ],
   },
 
-  // DASHBOARD
   {
     path: "/dashboard",
     element: <DashLayout />,
     errorElement: <NotFoundPage />,
     children: [
-      {
-        index: true,
-        element: <DashboardPage />,
-      },
-      {
-        path: "reports",
-        element: <ReportsPage />,
-      },
-      {
-        path: "users",
-        element: <UsersPage />,
-      },
+      { index: true, element: <DashboardPage /> },
+      { path: "reports", element: <ReportsPage /> },
+      { path: "users", element: <UsersPage /> },
     ],
   },
 ]);
