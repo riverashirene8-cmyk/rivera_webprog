@@ -1,22 +1,54 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import Button from "../../components/Button.jsx";
-import articles from "../../data/article-content.js";
+import { fetchArticleByName } from "../../services/ArticleService";
 
 function ArticlePage() {
   const { name } = useParams();
 
-  const article = articles.find(
-    (a) => a.name === name
-  );
+  const [article, setArticle] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  if (!article) {
+  useEffect(() => {
+    const load = async () => {
+      setLoading(true);
+      setError("");
+
+      try {
+        const data = await fetchArticleByName(name);
+        setArticle(data);
+      } catch (err) {
+        setArticle(null);
+        setError(err.message || "Article not found.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+  }, [name]);
+
+  if (loading) {
+    return (
+      <div className="p-6 text-center">
+        <p className="text-zinc-600">Loading article...</p>
+      </div>
+    );
+  }
+
+  if (!article || error) {
     return (
       <div className="p-6 text-center">
 
         <h1 className="text-2xl font-bold">
           Article Not Found
         </h1>
+
+        {error ? (
+          <p className="mt-2 text-sm text-zinc-600">{error}</p>
+        ) : null}
 
         <div className="mt-4">
           <Button to="/articles">

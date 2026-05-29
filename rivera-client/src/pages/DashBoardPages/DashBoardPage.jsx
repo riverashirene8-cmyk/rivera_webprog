@@ -40,25 +40,29 @@ const columns = [
   {
     field: 'id',
     headerName: 'ID',
-    width: 90,
+    minWidth: 70,
+    flex: 0.5,
   },
   {
     field: 'firstName',
     headerName: 'First Name',
-    width: 150,
+    minWidth: 120,
+    flex: 1,
     editable: true,
   },
   {
     field: 'lastName',
     headerName: 'Last Name',
-    width: 150,
+    minWidth: 120,
+    flex: 1,
     editable: true,
   },
   {
     field: 'age',
     headerName: 'Age',
     type: 'number',
-    width: 110,
+    minWidth: 80,
+    flex: 0.6,
     editable: true,
   },
   {
@@ -66,7 +70,8 @@ const columns = [
     headerName: 'Full Name',
     description: 'Generated from first and last name',
     sortable: false,
-    width: 200,
+    minWidth: 140,
+    flex: 1.2,
 
     valueGetter: (_, row) =>
       `${row.firstName || ''} ${

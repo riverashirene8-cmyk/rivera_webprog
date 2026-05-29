@@ -69,24 +69,27 @@ import { Gauge } from '@mui/x-charts/Gauge';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { DataGrid } from '@mui/x-data-grid';
 const columns = [
-    { field: 'id', headerName: 'ID', width: 90 },
+    { field: 'id', headerName: 'ID', minWidth: 70, flex: 0.5 },
     {
         field: 'firstName',
         headerName: 'First Name',
-        width: 150,
+        minWidth: 120,
+        flex: 1,
         editable: true,
     },
     {
         field: 'lastName',
         headerName: 'Last Name',
-        width: 150,
+        minWidth: 120,
+        flex: 1,
         editable: true,
     },
     {
         field: 'age',
         headerName: 'Age',
         type: 'number',
-        width: 110,
+        minWidth: 80,
+        flex: 0.6,
         editable: true,
     },
     {
@@ -94,8 +97,9 @@ const columns = [
         headerName: 'Full Name',
         description: 'This column has a value getter and is not sortable.',
         sortable: false,
-        width: 160,
-        valueGetter: (value, row) => `_${row.firstName || ''} ${row.lastName || ''}`,
+        minWidth: 120,
+        flex: 1,
+        valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
     },
 ];
  

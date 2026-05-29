@@ -19,6 +19,7 @@ import SignUpPage from "./pages/AuthPages/SignUpPage";
 import DashboardPage from "./pages/DashboardPages/DashboardPage";
 import ReportsPage from "./pages/DashboardPages/ReportsPage";
 import UsersPage from "./pages/DashboardPages/UsersPage";
+import DashArticleListPage from "./pages/DashArticleListPage";
 
 // Error Page
 import NotFoundPage from "./pages/NotFoundPage";
@@ -53,6 +54,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <DashboardPage /> },
       { path: "reports", element: <ReportsPage /> },
+      { path: "articles", element: <DashArticleListPage /> },
       { path: "users", element: <UsersPage /> },
     ],
   },

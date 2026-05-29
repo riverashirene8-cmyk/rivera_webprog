@@ -41,7 +41,7 @@ const AboutPage = () => {
                         <img
                             src={profileAbout}
                             alt="Profile Picture"
-                            className="h-72 w-72 rounded-full border-4 border-black object-cover shadow-md"
+                            className="w-48 h-48 sm:w-60 sm:h-60 md:w-72 md:h-72 rounded-full border-4 border-black object-cover shadow-md"
                         />
                     </div>
 

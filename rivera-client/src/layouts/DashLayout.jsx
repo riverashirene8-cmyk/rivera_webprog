@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 
 import { styled, useTheme } from "@mui/material/styles";
+import { useMediaQuery } from "@mui/material";
 
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -32,27 +33,38 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import AssessmentIcon from "@mui/icons-material/Assessment";
+import ArticleIcon from "@mui/icons-material/Article";
 
 const drawerWidth = 240;
 
-const dashboardNavItems = [
+const allDashboardNavItems = [
   {
     label: "Dashboard",
     title: "Dashboard",
     to: "/dashboard",
     icon: DashboardIcon,
+    roles: ["admin", "editor"],
   },
   {
     label: "Reports",
     title: "Reports",
     to: "/dashboard/reports",
     icon: AssessmentIcon,
+    roles: ["admin", "editor"],
+  },
+  {
+    label: "Articles",
+    title: "Articles",
+    to: "/dashboard/articles",
+    icon: ArticleIcon,
+    roles: ["admin", "editor"],
   },
   {
     label: "Users",
     title: "Users",
     to: "/dashboard/users",
     icon: PeopleIcon,
+    roles: ["admin"],
   },
 ];
 
@@ -193,7 +205,11 @@ const Search = styled("div")(({ theme }) => ({
 
   width: "100%",
 
-  maxWidth: 250,
+  maxWidth: "100%",
+
+  [theme.breakpoints.up("sm")]: {
+    maxWidth: 250,
+  },
 }));
 
 const SearchIconWrapper = styled("div")(
@@ -232,7 +248,7 @@ const StyledInputBase = styled(InputBase)(
 
 const getPageTitle = (pathname) => {
   return (
-    dashboardNavItems.find(
+    allDashboardNavItems.find(
       (item) => item.to === pathname
     )?.title || "Dashboard"
   );
@@ -241,11 +257,29 @@ const getPageTitle = (pathname) => {
 export default function DashLayout() {
   const theme = useTheme();
 
-  const [open, setOpen] = useState(true);
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const [open, setOpen] = useState(!isMobile);
 
   const location = useLocation();
 
   const navigate = useNavigate();
+
+  // Get user role from localStorage
+  const userRole = localStorage.getItem("userRole") || "editor";
+
+  // Filter navigation items based on user role
+  const dashboardNavItems = allDashboardNavItems.filter(
+    (item) => item.roles.includes(userRole)
+  );
+
+  const handleLogout = () => {
+    // Clear user data from localStorage
+    localStorage.removeItem("userToken");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("userName");
+    navigate("/");
+  };
 
   return (
     <Box
@@ -309,7 +343,7 @@ export default function DashLayout() {
                   "rgba(255,255,255,0.1)",
               },
             }}
-            onClick={() => navigate("/")}
+            onClick={handleLogout}
           >
             Logout
           </Button>
@@ -317,7 +351,11 @@ export default function DashLayout() {
       </AppBar>
 
       {/* SIDEBAR */}
-      <Drawer variant="permanent" open={open}>
+      <Drawer 
+        variant={isMobile ? "temporary" : "permanent"} 
+        open={open}
+        onClose={() => setOpen(false)}
+      >
         <DrawerHeader>
           <IconButton
             onClick={() => setOpen(false)}

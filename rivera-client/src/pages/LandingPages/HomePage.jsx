@@ -32,7 +32,7 @@ const HomePage = () => {
                         <img
                             src={homepage}
                             alt="Profile Picture"
-                            className="w-72 h-72 object-cover rounded-full border-4 border-black shadow-md"
+                            className="w-48 h-48 sm:w-60 sm:h-60 md:w-72 md:h-72 object-cover rounded-full border-4 border-black shadow-md"
                         />
                     </div>
 

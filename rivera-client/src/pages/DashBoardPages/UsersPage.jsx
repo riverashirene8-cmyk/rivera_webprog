@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
     Alert,
@@ -21,6 +21,12 @@ import {
     useMediaQuery,
 } from '@mui/material';
 
+import {
+    fetchUsers,
+    createUser,
+    updateUser,
+} from '../../services/UserService';
+
 import { useTheme } from '@mui/material/styles';
 
 import Visibility from '@mui/icons-material/Visibility';
@@ -28,8 +34,6 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import SearchIcon from '@mui/icons-material/Search';
 
 import { DataGrid } from '@mui/x-data-grid';
-
-import usersSeed from '../../data/users.json?raw';
 
 const roles = ['admin', 'editor', 'viewer'];
 const genders = ['male', 'female', 'other'];
@@ -53,73 +57,6 @@ const labelize = (value) =>
         ? `${value.charAt(0).toUpperCase()}${value.slice(1)}`
         : '';
 
-const loadUsers = () => {
-    try {
-        return {
-            users: JSON.parse(usersSeed).map((user, index) => ({
-                id: Number(user.id) || index + 1,
-
-                firstName: String(user.firstName ?? '').trim(),
-
-                lastName: String(user.lastName ?? '').trim(),
-
-                age: String(user.age ?? '').trim(),
-
-                gender: genders.includes(
-                    String(user.gender ?? '')
-                        .trim()
-                        .toLowerCase()
-                )
-                    ? String(user.gender ?? '')
-                          .trim()
-                          .toLowerCase()
-                    : '',
-
-                contactNumber: String(
-                    user.contactNumber ?? ''
-                ).trim(),
-
-                email: String(user.email ?? '')
-                    .trim()
-                    .toLowerCase(),
-
-                role: roles.includes(
-                    String(user.role ?? '')
-                        .trim()
-                        .toLowerCase()
-                )
-                    ? String(user.role ?? '')
-                          .trim()
-                          .toLowerCase()
-                    : 'editor',
-
-                username: String(user.username ?? '')
-                    .trim()
-                    .toLowerCase(),
-
-                password: String(user.password ?? ''),
-
-                address: String(user.address ?? '').trim(),
-
-                isActive:
-                    typeof user.isActive === 'boolean'
-                        ? user.isActive
-                        : true,
-            })),
-
-            error: '',
-        };
-    } catch {
-        return {
-            users: [],
-            error:
-                'Unable to load users from src/data/users.json.',
-        };
-    }
-};
-
-const seed = loadUsers();
-
 const UsersPage = () => {
     const theme = useTheme();
 
@@ -127,7 +64,8 @@ const UsersPage = () => {
         theme.breakpoints.down('sm')
     );
 
-    const [users, setUsers] = useState(seed.users);
+    const [users, setUsers] = useState([]);
+    const [serverError, setServerError] = useState('');
 
     const [modal, setModal] = useState({
         open: false,
@@ -184,6 +122,19 @@ const UsersPage = () => {
 
         resetForm();
     };
+
+    useEffect(() => {
+        const load = async () => {
+            try {
+                const data = await fetchUsers();
+                setUsers(data);
+            } catch (error) {
+                setServerError(error.message || 'Unable to load users.');
+            }
+        };
+
+        load();
+    }, []);
 
     const handleChange = ({
         target: { name, value, checked, type },
@@ -320,7 +271,7 @@ const UsersPage = () => {
         return nextErrors;
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         const nextErrors = validate();
@@ -366,37 +317,31 @@ const UsersPage = () => {
             isActive: form.isActive,
         };
 
-        setUsers((prev) =>
-            modal.id
-                ? prev.map((user) =>
-                      user.id === modal.id
-                          ? {
-                                ...user,
-                                ...nextUser,
-                            }
-                          : user
-                  )
-                : [
-                      ...prev,
-                      {
-                          id:
-                              prev.reduce(
-                                  (max, user) =>
-                                      Math.max(
-                                          max,
-                                          Number(
-                                              user.id
-                                          ) || 0
-                                      ),
-                                  0
-                              ) + 1,
+        try {
+            const savedUser = modal.id
+                ? await updateUser(modal.id, {
+                      ...nextUser,
+                      type: nextUser.role,
+                  })
+                : await createUser({
+                      ...nextUser,
+                      type: nextUser.role,
+                  });
 
-                          ...nextUser,
-                      },
-                  ]
-        );
+            setUsers((prev) =>
+                modal.id
+                    ? prev.map((user) =>
+                          user.id === savedUser.id
+                              ? savedUser
+                              : user
+                      )
+                    : [...prev, savedUser]
+            );
 
-        closeModal();
+            closeModal();
+        } catch (error) {
+            setServerError(error.message || 'Unable to save user.');
+        }
     };
 
     const toggleStatus = (id) => {
@@ -610,14 +555,6 @@ const UsersPage = () => {
                 </Button>
             </Box>
 
-            {seed.error ? (
-                <Alert
-                    severity="error"
-                    sx={{ mb: 2 }}
-                >
-                    {seed.error}
-                </Alert>
-            ) : null}
 
             {/* SEARCH + FILTERS */}
 
@@ -814,6 +751,7 @@ const UsersPage = () => {
                 fullWidth
                 maxWidth="md"
                 fullScreen={isMobile}
+                disableEnforceFocus
             >
                 <Box
                     component="form"
