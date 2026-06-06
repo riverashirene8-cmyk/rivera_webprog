@@ -160,8 +160,9 @@ const connectDB = async () => {
           connectTimeoutMS: 10000,
         });
         console.log("✓ MongoDB Connected (Atlas)");
-        await seedUsers();
-        await seedArticles();
+        // Seed data asynchronously without blocking
+        seedUsers().catch(err => console.error("Seeding users failed:", err));
+        seedArticles().catch(err => console.error("Seeding articles failed:", err));
         return;
       } catch (atlasError) {
         console.log("✗ Atlas connection failed:", atlasError.message);
@@ -176,8 +177,9 @@ const connectDB = async () => {
       serverSelectionTimeoutMS: 5000
     });
     console.log("✓ MongoDB Connected (Local)");
-    await seedUsers();
-    await seedArticles();
+    // Seed data asynchronously without blocking
+    seedUsers().catch(err => console.error("Seeding users failed:", err));
+    seedArticles().catch(err => console.error("Seeding articles failed:", err));
   } catch (error) {
     console.error("✗ MongoDB connection failed:", error.message);
     console.log("\n⚠️  Troubleshooting:");
