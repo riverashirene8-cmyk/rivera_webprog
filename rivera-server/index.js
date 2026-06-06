@@ -21,11 +21,25 @@ app.use(express.urlencoded({ extended: true }));
 
 /* ---------------- CORS ---------------- */
 const corsOptions = {
-  origin: process.env.CLIENT_ORIGIN || "*",
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      "https://rivera-client-omega.vercel.app",
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "http://localhost:5175",
+      process.env.CLIENT_ORIGIN,
+    ].filter(Boolean);
+    
+    if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== "production") {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: false,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-  optionsSuccessStatus: 204,
+  optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
 
