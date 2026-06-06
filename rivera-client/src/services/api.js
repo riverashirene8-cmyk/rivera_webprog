@@ -1,31 +1,39 @@
-// API base URL (safe for Vite + Vercel)
+// ================================
+// API BASE URL (VITE + VERCEL SAFE)
+// ================================
 
 const rawApiUrl = import.meta.env.VITE_API_URL?.trim();
 
-// ❌ No fallback to "/api" in production anymore
+// ⚠️ Hard stop if missing env
 if (!rawApiUrl) {
   throw new Error("VITE_API_URL is missing in environment variables");
 }
 
-// normalize URL (remove trailing slash)
+// Normalize base URL
 export const API_ROOT = rawApiUrl.replace(/\/$/, "");
 
-// helper for endpoints
+// ================================
+// BUILD API URL HELPER
+// ================================
 export const apiUrl = (path = "") => {
-  const suffix = path.startsWith("/") ? path : `/${path}`;
-  return `${API_ROOT}${suffix}`;
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  return `${API_ROOT}${cleanPath}`;
 };
 
-// parse JSON safely
+// ================================
+// SAFE JSON PARSER
+// ================================
 export const parseJsonResponse = async (response) => {
   const contentType = response.headers.get("content-type") || "";
 
+  // If NOT JSON → probably backend error or wrong URL
   if (!contentType.includes("application/json")) {
-    const preview = (await response.text()).slice(0, 80);
+    const preview = (await response.text()).slice(0, 120);
 
-    if (preview.toLowerCase().startsWith("<!doctype")) {
+    // Detect HTML error page (very common in wrong API URL)
+    if (preview.toLowerCase().includes("<!doctype")) {
       throw new Error(
-        "API returned HTML instead of JSON. Check backend deployment or API URL."
+        "Backend not reachable or wrong API URL. Check VITE_API_URL in Vercel."
       );
     }
 
@@ -35,7 +43,9 @@ export const parseJsonResponse = async (response) => {
   return response.json();
 };
 
-// handle API response errors
+// ================================
+// RESPONSE HANDLER
+// ================================
 export const handleResponse = async (response) => {
   const data = await parseJsonResponse(response);
 
