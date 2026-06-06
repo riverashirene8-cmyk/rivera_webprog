@@ -3,13 +3,8 @@ const connectDB = require('../config/db');
 
 const getArticles = async (req, res) => {
   try {
-    console.log("🔍 GET /api/articles - starting");
-    
-    // Query with lean() to get plain JavaScript objects
-    console.log("📊 Querying database...");
+    await connectDB();
     const articles = await Article.find().lean().sort({ title: 1 });
-    
-    console.log(`✓ Fetched ${articles.length} articles`);
     res.json({ articles });
   } catch (error) {
     console.error("❌ Error:", error.message);
@@ -19,6 +14,7 @@ const getArticles = async (req, res) => {
 
 const getArticleByName = async (req, res) => {
   try {
+    await connectDB();
     const article = await Article.findOne({
       name: req.params.name.toLowerCase(),
     }).lean();
@@ -36,6 +32,7 @@ const getArticleByName = async (req, res) => {
 
 const createArticle = async (req, res) => {
   try {
+    await connectDB();
     const name = String(req.body.name || '')
       .trim()
       .toLowerCase()
@@ -67,6 +64,7 @@ const createArticle = async (req, res) => {
 
 const updateArticle = async (req, res) => {
   try {
+    await connectDB();
     const name = String(req.body.name || '')
       .trim()
       .toLowerCase()
@@ -109,6 +107,7 @@ const updateArticle = async (req, res) => {
 
 const deleteArticle = async (req, res) => {
   try {
+    await connectDB();
     const article = await Article.findByIdAndDelete(req.params.id);
 
     if (!article) {

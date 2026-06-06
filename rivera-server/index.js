@@ -51,7 +51,7 @@ app.use(cors(corsOptions));
 
 /* ---------------- TEST ROUTE ---------------- */
 app.get("/", (req, res) => {
-  res.json({ message: "API is running 🚀" });
+  res.json({ message: "Rivera Server is running" });
 });
 
 app.get("/test", (req, res) => {
@@ -103,4 +103,4 @@ if (require.main === module) {
 }
 
 /* ---------------- VERCEL EXPORT (IMPORTANT) ---------------- */
-module.exports = app;
+module.exports = (req, res) => app(req, res);
