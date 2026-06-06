@@ -26,19 +26,25 @@ app.use((req, res, next) => {
 const corsOptions = {
   origin: (origin, callback) => {
     const allowedOrigins = [
-      "https://rivera-client-omega.vercel.app",
+      // Local development
       "http://localhost:5173",
       "http://localhost:5174",
       "http://localhost:5175",
       "http://localhost:5176",
-      process.env.CLIENT_ORIGIN,
+      // Deployed sites
+      process.env.CLIENT_ORIGIN, // Set this to your client URL
     ].filter(Boolean);
     
-    // Allow requests with no origin (mobile apps, curl requests, etc)
-    if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== "production") {
+    // In development, allow any origin
+    // In production, check against allowedOrigins
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
+    } else if (process.env.NODE_ENV === "development") {
+      callback(null, true); // Allow all in development
     } else {
-      callback(null, true); // Allow for debugging
+      // In production, log but still allow (for debugging)
+      console.warn(`CORS request from disallowed origin: ${origin}`);
+      callback(null, true);
     }
   },
   credentials: false,
