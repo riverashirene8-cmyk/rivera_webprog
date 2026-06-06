@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
+let cachedConnection = null;
+
 const seedArticles = async () => {
   const Article = require("../models/Article");
 
@@ -85,7 +87,7 @@ const seedUsers = async () => {
   try {
     const count = await User.estimatedDocumentCount();
     console.log(`Found ${count} existing users`);
-    
+
     if (count > 0) {
       console.log("Database already has users, skipping seed");
       return;
@@ -114,7 +116,7 @@ const seedUsers = async () => {
         contactNumber: "09182345678",
         email: "editor@rivera.dev",
         type: "editor",
-        username: "editorrivera",
+        username: "editorivera",
         password: "Editor123!",
         address: "Makati, Philippines",
         isActive: true,
@@ -149,50 +151,40 @@ const seedUsers = async () => {
 };
 
 const connectDB = async () => {
-  try {
-    const atlasUri = process.env.MONGO_URI;
-    
-    if (atlasUri) {
-      try {
-        console.log("Attempting to connect to MongoDB Atlas...");
-        await mongoose.connect(atlasUri, { 
-          serverSelectionTimeoutMS: 30000,
-          connectTimeoutMS: 30000,
-          socketTimeoutMS: 45000,
-          maxPoolSize: 10,
-          minPoolSize: 5,
-          retryWrites: true,
-          w: 'majority',
-        });
-        console.log("✓ MongoDB Connected (Atlas)");
-        // Seed data asynchronously without blocking
-        seedUsers().catch(err => console.error("Seeding users failed:", err));
-        seedArticles().catch(err => console.error("Seeding articles failed:", err));
-        return;
-      } catch (atlasError) {
-        console.log("✗ Atlas connection failed:", atlasError.message);
-        console.log("Falling back to local MongoDB...");
-      }
-    }
+  if (cachedConnection && mongoose.connection.readyState === 1) {
+    console.log("Using cached MongoDB connection");
+    return cachedConnection;
+  }
 
-    // Fallback to local MongoDB
-    const localUri = "mongodb://localhost:27017/rivera";
-    console.log("Attempting to connect to local MongoDB...");
-    await mongoose.connect(localUri, { 
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 10000,
+  const atlasUri = process.env.MONGO_URI;
+
+  if (!atlasUri) {
+    console.error("MONGO_URI is not defined - server will run without database");
+    return null;
+  }
+
+  try {
+    console.log("Connecting to MongoDB Atlas...");
+    cachedConnection = await mongoose.connect(atlasUri, {
+      serverSelectionTimeoutMS: 30000,
+      connectTimeoutMS: 30000,
+      socketTimeoutMS: 45000,
+      bufferTimeoutMS: 30000,
+      family: 4,
       maxPoolSize: 10,
+      minPoolSize: 5,
+      retryWrites: true,
+      w: "majority",
     });
-    console.log("✓ MongoDB Connected (Local)");
+    console.log("✓ MongoDB Connected (Atlas)");
     // Seed data asynchronously without blocking
     seedUsers().catch(err => console.error("Seeding users failed:", err));
     seedArticles().catch(err => console.error("Seeding articles failed:", err));
+    return cachedConnection;
   } catch (error) {
     console.error("✗ MongoDB connection failed:", error.message);
-    console.log("\n⚠️  Troubleshooting:");
-    console.log("1. For Atlas: Check IP whitelist (Network Access) and internet connection");
-    console.log("2. For Local: Start MongoDB with: mongod");
-    // Don't exit - Vercel needs the function to stay alive
+    console.log("Server will continue running without database connection");
+    return null;
   }
 };
 

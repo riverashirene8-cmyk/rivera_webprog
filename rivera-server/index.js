@@ -9,11 +9,10 @@ const articleRoutes = require("./routes/articleRoutes");
 
 const app = express();
 
-/* -------- DATABASE CONNECTION (Non-blocking) -------- */
-// Try to connect to database but don't block server startup
+/* -------- DATABASE CONNECTION (Non-blocking for Vercel) -------- */
+// Attempt to connect but don't block server startup
 connectDB().catch((error) => {
-  console.error("Failed to connect to MongoDB:", error.message);
-  console.log("Server will continue running without database connection");
+  console.error("Initial MongoDB connection attempt failed:", error.message);
 });
 
 /* ---------------- MIDDLEWARE ---------------- */
@@ -42,7 +41,7 @@ app.use("/api/articles", articleRoutes);
 /* ---------------- ERROR HANDLER ---------------- */
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ message: "Server Error" });
+  res.status(500).json({ message: err.message || "Server Error" });
 });
 
 /* ---------------- LOCAL SERVER LISTENER (Development) ----------- */

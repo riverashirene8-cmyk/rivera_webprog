@@ -1,7 +1,9 @@
 const Article = require('../models/Article');
+const connectDB = require('../config/db');
 
 const getArticles = async (req, res) => {
   try {
+    await connectDB();
     const articles = await Article.find().sort({ title: 1 });
     res.json({ articles });
   } catch (error) {
@@ -11,6 +13,7 @@ const getArticles = async (req, res) => {
 
 const getArticleByName = async (req, res) => {
   try {
+    await connectDB();
     const article = await Article.findOne({
       name: req.params.name.toLowerCase(),
     });
@@ -27,6 +30,7 @@ const getArticleByName = async (req, res) => {
 
 const createArticle = async (req, res) => {
   try {
+    await connectDB();
     const name = String(req.body.name || '')
       .trim()
       .toLowerCase()
@@ -58,6 +62,7 @@ const createArticle = async (req, res) => {
 
 const updateArticle = async (req, res) => {
   try {
+    await connectDB();
     const name = String(req.body.name || '')
       .trim()
       .toLowerCase()
@@ -100,6 +105,7 @@ const updateArticle = async (req, res) => {
 
 const deleteArticle = async (req, res) => {
   try {
+    await connectDB();
     const article = await Article.findByIdAndDelete(req.params.id);
 
     if (!article) {
