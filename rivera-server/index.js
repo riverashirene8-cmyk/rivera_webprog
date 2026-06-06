@@ -26,13 +26,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 /* ---------------- CORS ---------------- */
-app.use(
-  cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+const corsOptions = {
+  origin: process.env.CLIENT_ORIGIN || "*",
+  credentials: false,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  optionsSuccessStatus: 204,
+};
+app.use(cors(corsOptions));
+
+/* ---------------- PREFLIGHT ---------------- */
+app.options("*", cors(corsOptions));
 
 /* ---------------- TEST ROUTE ---------------- */
 app.get("/", (req, res) => {
@@ -48,6 +52,14 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: "Server Error" });
 });
+
+/* ---------------- LOCAL SERVER LISTENER (Development) ----------- */
+const PORT = process.env.PORT || 5000;
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
 
 /* ---------------- VERCEL EXPORT (IMPORTANT) ---------------- */
 module.exports = app;
