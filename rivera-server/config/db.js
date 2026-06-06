@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
+// Single global connection (Vercel's Lambda reuses containers)
 let cachedConnection = null;
 
 const seedArticles = async () => {
@@ -165,17 +166,21 @@ const connectDB = async () => {
 
   try {
     console.log("Connecting to MongoDB Atlas...");
-    cachedConnection = await mongoose.connect(atlasUri, {
-      serverSelectionTimeoutMS: 30000,
-      connectTimeoutMS: 30000,
-      socketTimeoutMS: 45000,
-      bufferTimeoutMS: 30000,
+    await mongoose.connect(atlasUri, {
+      serverSelectionTimeoutMS: 60000,
+      connectTimeoutMS: 60000,
+      socketTimeoutMS: 60000,
+      bufferTimeoutMS: 60000,
+      maxTimeMS: 60000,
       family: 4,
       maxPoolSize: 10,
       minPoolSize: 5,
       retryWrites: true,
       w: "majority",
+      appName: "rivera-server",
     });
+    
+    cachedConnection = mongoose;
     console.log("✓ MongoDB Connected (Atlas)");
     // Seed data asynchronously without blocking
     seedUsers().catch(err => console.error("Seeding users failed:", err));
