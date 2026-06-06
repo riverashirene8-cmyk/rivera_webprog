@@ -1,24 +1,22 @@
+// API base URL (safe for Vite + Vercel)
+
 const rawApiUrl = import.meta.env.VITE_API_URL?.trim();
 
-const resolveApiRoot = () => {
-  if (!rawApiUrl) {
-    return "/api";
-  }
+// ❌ No fallback to "/api" in production anymore
+if (!rawApiUrl) {
+  throw new Error("VITE_API_URL is missing in environment variables");
+}
 
-  if (rawApiUrl === "http://localhost:8000/api") {
-    return "http://localhost:5000/api";
-  }
+// normalize URL (remove trailing slash)
+export const API_ROOT = rawApiUrl.replace(/\/$/, "");
 
-  return rawApiUrl.replace(/\/$/, "");
-};
-
-export const API_ROOT = resolveApiRoot();
-
+// helper for endpoints
 export const apiUrl = (path = "") => {
   const suffix = path.startsWith("/") ? path : `/${path}`;
   return `${API_ROOT}${suffix}`;
 };
 
+// parse JSON safely
 export const parseJsonResponse = async (response) => {
   const contentType = response.headers.get("content-type") || "";
 
@@ -27,18 +25,17 @@ export const parseJsonResponse = async (response) => {
 
     if (preview.toLowerCase().startsWith("<!doctype")) {
       throw new Error(
-        "API returned HTML instead of JSON. Start the backend with npm start in rivera-server (index.js on port 5000), then restart the Vite dev server."
+        "API returned HTML instead of JSON. Check backend deployment or API URL."
       );
     }
 
-    throw new Error(
-      preview || `Unexpected response (${response.status})`
-    );
+    throw new Error(preview || `Unexpected response (${response.status})`);
   }
 
   return response.json();
 };
 
+// handle API response errors
 export const handleResponse = async (response) => {
   const data = await parseJsonResponse(response);
 
