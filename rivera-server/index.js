@@ -2,7 +2,6 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
-const bodyParser = require("body-parser");
 
 const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
@@ -22,8 +21,7 @@ const app = express();
 
 /* ---------------- MIDDLEWARE ---------------- */
 app.use(express.json());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
 /* ---------------- CORS ---------------- */
 const corsOptions = {
