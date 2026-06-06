@@ -29,7 +29,7 @@ app.use((req, res, next) => {
   next();
 });
 
-/* ---------------- CORS ---------------- */
+/* ---------------- CORS -------- --------*/
 const corsOptions = {
   origin: (origin, callback) => {
     const allowedOrigins = [
@@ -55,7 +55,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // Handle preflight for all routes
 
 /* ---------------- TEST ROUTE ---------------- */
 app.get("/", (req, res) => {
