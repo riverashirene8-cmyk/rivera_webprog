@@ -1,4 +1,4 @@
-import { apiUrl, handleResponse } from "./api";
+import { apiUrl, apiRequest } from "./api";
 
 const API_BASE = apiUrl("/users");
 
@@ -20,43 +20,38 @@ const normalizeUser = (user) => ({
 });
 
 export const fetchUsers = async () => {
-  const response = await fetch(API_BASE);
-  const data = await handleResponse(response);
+  const data = await apiRequest(API_BASE);
   return Array.isArray(data.users)
     ? data.users.map(normalizeUser)
     : [];
 };
 
 export const createUser = async (user) => {
-  const response = await fetch(API_BASE, {
+  const data = await apiRequest(API_BASE, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(user),
   });
-
-  const data = await handleResponse(response);
   return normalizeUser(data);
 };
 
 export const updateUser = async (id, user) => {
-  const response = await fetch(`${API_BASE}/${id}`, {
+  const data = await apiRequest(`${API_BASE}/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(user),
   });
-
-  const data = await handleResponse(response);
   return normalizeUser(data);
 };
 
 export const registerUser = async ({ firstName, lastName, email, password }) => {
   const username = email.split('@')[0];
-  
-  const response = await fetch(API_BASE, {
+
+  const data = await apiRequest(API_BASE, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -75,12 +70,11 @@ export const registerUser = async ({ firstName, lastName, email, password }) => 
     }),
   });
 
-  const data = await handleResponse(response);
   return normalizeUser(data);
 };
 
 export const loginUser = async ({ email, password }) => {
-  const response = await fetch(`${API_BASE}/login`, {
+  const data = await apiRequest(`${API_BASE}/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -88,6 +82,5 @@ export const loginUser = async ({ email, password }) => {
     body: JSON.stringify({ email, password }),
   });
 
-  const data = await handleResponse(response);
   return data;
 };

@@ -55,3 +55,30 @@ export const handleResponse = async (response) => {
 
   return data;
 };
+
+// ================================
+// FETCH WITH NETWORK ERROR HANDLING & TIMEOUT
+// ================================
+export const apiRequest = async (url, options = {}) => {
+  // Create an AbortController for timeout
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 120000); // 120 second timeout
+  
+  try {
+    const response = await fetch(url, { 
+      ...options,
+      signal: controller.signal 
+    }).catch((err) => {
+      if (err.name === 'AbortError') {
+        throw new Error("Server request timed out after 120 seconds. The deployed server may be slow to start.");
+      }
+      throw new Error("Unable to connect to server. Check your internet connection and API URL.");
+    });
+
+    clearTimeout(timeoutId);
+    return handleResponse(response);
+  } catch (error) {
+    clearTimeout(timeoutId);
+    throw error;
+  }
+};
