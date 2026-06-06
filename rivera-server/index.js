@@ -94,19 +94,19 @@ const startServer = async () => {
     return server;
   } catch (error) {
     console.error("Error starting server:", error.message);
-    // For Vercel, start server anyway
+    // Start server anyway (database will retry on requests)
     const PORT = process.env.PORT || 5000;
     const server = app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT} (in fallback mode)`);
+      console.log(`Server is running on port ${PORT} (database connection will retry)`);
     });
     return server;
   }
 };
 
-/* Start if running directly */
+/* Start if running directly (for Railway, Render, Heroku, etc.) */
 if (require.main === module) {
   startServer();
 }
 
-/* ---------------- VERCEL EXPORT (IMPORTANT) ---------------- */
-module.exports = (req, res) => app(req, res);
+/* Export app for serverless platforms (AWS Lambda, etc.) */
+module.exports = app;

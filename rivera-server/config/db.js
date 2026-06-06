@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
-// Single global connection (Vercel's Lambda reuses containers)
+// Single global connection (reuses connection across requests)
 let cachedConnection = null;
 
 const seedArticles = async () => {

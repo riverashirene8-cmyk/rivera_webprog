@@ -1,0 +1,16 @@
+# Render deployment configuration
+# This file helps Render automatically detect and deploy your Node.js server
+
+# Build command
+buildCommand = "npm install"
+
+# Start command
+startCommand = "node index.js"
+
+# Environment
+[env]
+NODE_ENV = "production"
+
+# Healthcheck (optional - Render will check if app is running)
+[healthCheck]
+path = "/"
