@@ -183,7 +183,7 @@ const connectDB = async () => {
     console.log("\n⚠️  Troubleshooting:");
     console.log("1. For Atlas: Check IP whitelist (Network Access) and internet connection");
     console.log("2. For Local: Start MongoDB with: mongod");
-    process.exit(1);
+    // Don't exit - Vercel needs the function to stay alive
   }
 };
 

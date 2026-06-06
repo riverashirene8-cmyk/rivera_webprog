@@ -9,15 +9,12 @@ const articleRoutes = require("./routes/articleRoutes");
 
 const app = express();
 
-/* ---------------- DATABASE ---------------- */
-(async () => {
-  try {
-    await connectDB();
-    console.log("MongoDB Connected");
-  } catch (error) {
-    console.error("MongoDB Connection Failed:", error);
-  }
-})();
+/* -------- DATABASE CONNECTION (Non-blocking) -------- */
+// Try to connect to database but don't block server startup
+connectDB().catch((error) => {
+  console.error("Failed to connect to MongoDB:", error.message);
+  console.log("Server will continue running without database connection");
+});
 
 /* ---------------- MIDDLEWARE ---------------- */
 app.use(express.json());
