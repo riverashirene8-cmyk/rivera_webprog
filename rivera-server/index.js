@@ -61,6 +61,10 @@ app.get("/", (req, res) => {
   res.json({ message: "API is running 🚀" });
 });
 
+app.get("/test", (req, res) => {
+  res.json({ message: "Test endpoint working" });
+});
+
 /* ---------------- API ROUTES ---------------- */
 app.use("/api/users", userRoutes);
 app.use("/api/articles", articleRoutes);
