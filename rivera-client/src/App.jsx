@@ -15,10 +15,12 @@ import ArticlePage from "./pages/LandingPages/ArticlePage";
 import SignInPage from "./pages/AuthPages/SignInPage";
 import SignUpPage from "./pages/AuthPages/SignUpPage";
 
-// Dashboard Pages
-import DashBoardPage from "./pages/DashboardPages/DashBoardPage";
-import ReportsPage from "./pages/DashboardPages/ReportsPage";
-import UsersPage from "./pages/DashboardPages/UsersPage";
+// Dashboard Pages (FIXED CASE HERE ⚠️)
+import DashBoardPage from "./pages/DashBoardPages/DashBoardPage";
+import ReportsPage from "./pages/DashBoardPages/ReportsPage";
+import UsersPage from "./pages/DashBoardPages/UsersPage";
+
+// Dashboard Article Page (separate file)
 import DashArticleListPage from "./pages/DashArticleListPage";
 
 // Error Page
@@ -30,7 +32,7 @@ const router = createBrowserRouter([
     element: <Layout />,
     errorElement: <NotFoundPage />,
     children: [
-      { path: "", element: <HomePage /> },
+      { index: true, element: <HomePage /> },
       { path: "about", element: <AboutPage /> },
       { path: "articles", element: <ArticleListPage /> },
       { path: "articles/:name", element: <ArticlePage /> },
