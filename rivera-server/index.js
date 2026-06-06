@@ -12,11 +12,6 @@ const app = express();
 /* -------- DATABASE CONNECTION & SERVER STARTUP -------- */
 // Removed from here - moved to end of file
 
-/* Start server if this is the main module */
-if (require.main === module) {
-  startServer();
-}
-
 /* ---------------- MIDDLEWARE ---------------- */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
