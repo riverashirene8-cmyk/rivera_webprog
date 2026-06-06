@@ -11,13 +11,23 @@ const app = express();
 
 /* -------- DATABASE CONNECTION (Non-blocking for Vercel) -------- */
 // Attempt to connect but don't block server startup
-connectDB().catch((error) => {
+connectDB().then(db => {
+  if (db) {
+    console.log("Database ready for queries");
+  }
+}).catch((error) => {
   console.error("Initial MongoDB connection attempt failed:", error.message);
 });
 
 /* ---------------- MIDDLEWARE ---------------- */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+/* Request logging middleware */
+app.use((req, res, next) => {
+  console.log(`→ ${req.method} ${req.path}`);
+  next();
+});
 
 /* ---------------- CORS ---------------- */
 const corsOptions = {
@@ -27,13 +37,15 @@ const corsOptions = {
       "http://localhost:5173",
       "http://localhost:5174",
       "http://localhost:5175",
+      "http://localhost:5176",
       process.env.CLIENT_ORIGIN,
     ].filter(Boolean);
     
+    // Allow requests with no origin (mobile apps, curl requests, etc)
     if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== "production") {
       callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS"));
+      callback(null, true); // Allow for debugging
     }
   },
   credentials: false,
@@ -41,7 +53,9 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   optionsSuccessStatus: 200,
 };
+
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // Handle preflight for all routes
 
 /* ---------------- TEST ROUTE ---------------- */
 app.get("/", (req, res) => {
