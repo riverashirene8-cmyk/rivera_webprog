@@ -156,8 +156,13 @@ const connectDB = async () => {
       try {
         console.log("Attempting to connect to MongoDB Atlas...");
         await mongoose.connect(atlasUri, { 
-          serverSelectionTimeoutMS: 10000,
-          connectTimeoutMS: 10000,
+          serverSelectionTimeoutMS: 30000,
+          connectTimeoutMS: 30000,
+          socketTimeoutMS: 45000,
+          maxPoolSize: 10,
+          minPoolSize: 5,
+          retryWrites: true,
+          w: 'majority',
         });
         console.log("✓ MongoDB Connected (Atlas)");
         // Seed data asynchronously without blocking
@@ -174,7 +179,9 @@ const connectDB = async () => {
     const localUri = "mongodb://localhost:27017/rivera";
     console.log("Attempting to connect to local MongoDB...");
     await mongoose.connect(localUri, { 
-      serverSelectionTimeoutMS: 5000
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 10000,
+      maxPoolSize: 10,
     });
     console.log("✓ MongoDB Connected (Local)");
     // Seed data asynchronously without blocking
