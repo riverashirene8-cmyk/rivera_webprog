@@ -166,28 +166,34 @@ const connectDB = async () => {
 
   try {
     console.log("Connecting to MongoDB Atlas...");
+    const startTime = Date.now();
     await mongoose.connect(atlasUri, {
-      serverSelectionTimeoutMS: 60000,
-      connectTimeoutMS: 60000,
-      socketTimeoutMS: 60000,
-      bufferTimeoutMS: 60000,
-      maxTimeMS: 60000,
+      serverSelectionTimeoutMS: 120000,
+      connectTimeoutMS: 120000,
+      socketTimeoutMS: 120000,
       family: 4,
       maxPoolSize: 10,
       minPoolSize: 5,
       retryWrites: true,
       w: "majority",
       appName: "rivera-server",
+      // Disable Mongoose's built-in connection buffering
+      bufferCommands: false,
     });
     
+    const connectTime = Date.now() - startTime;
+    console.log(`✓ MongoDB Connected (Atlas) in ${connectTime}ms`);
+    
     cachedConnection = mongoose;
-    console.log("✓ MongoDB Connected (Atlas)");
+    
     // Seed data asynchronously without blocking
     seedUsers().catch(err => console.error("Seeding users failed:", err));
     seedArticles().catch(err => console.error("Seeding articles failed:", err));
+    
     return cachedConnection;
   } catch (error) {
     console.error("✗ MongoDB connection failed:", error.message);
+    console.error("Full error:", error);
     console.log("Server will continue running without database connection");
     return null;
   }
