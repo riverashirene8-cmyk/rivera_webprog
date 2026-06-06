@@ -3,11 +3,20 @@ const connectDB = require('../config/db');
 
 const getArticles = async (req, res) => {
   try {
-    await connectDB();
-    const articles = await Article.find().sort({ title: 1 });
+    console.log("🔍 GET /api/articles request received");
+    const db = await connectDB();
+    
+    if (!db) {
+      return res.status(503).json({ message: "Database not connected" });
+    }
+    
+    console.log("✓ Database connected, querying articles...");
+    const articles = await Article.find().sort({ title: 1 }).exec();
+    
+    console.log(`✓ Found ${articles.length} articles`);
     res.json({ articles });
   } catch (error) {
-    console.error("Error fetching articles:", error.message);
+    console.error("❌ Error fetching articles:", error.message);
     res.status(500).json({ message: error.message });
   }
 };
