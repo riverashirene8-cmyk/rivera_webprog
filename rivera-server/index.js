@@ -9,15 +9,13 @@ const articleRoutes = require("./routes/articleRoutes");
 
 const app = express();
 
-/* -------- DATABASE CONNECTION (Non-blocking for Vercel) -------- */
-// Attempt to connect but don't block server startup
-connectDB().then(db => {
-  if (db) {
-    console.log("Database ready for queries");
-  }
-}).catch((error) => {
-  console.error("Initial MongoDB connection attempt failed:", error.message);
-});
+/* -------- DATABASE CONNECTION & SERVER STARTUP -------- */
+// Removed from here - moved to end of file
+
+/* Start server if this is the main module */
+if (require.main === module) {
+  startServer();
+}
 
 /* ---------------- MIDDLEWARE ---------------- */
 app.use(express.json());
@@ -75,12 +73,38 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message || "Server Error" });
 });
 
-/* ---------------- LOCAL SERVER LISTENER (Development) ----------- */
-const PORT = process.env.PORT || 5000;
+/* -------- DATABASE CONNECTION & SERVER STARTUP -------- */
+const startServer = async () => {
+  try {
+    // Try to connect to database (don't fail if it doesn't work immediately)
+    const dbConnected = await connectDB();
+    if (dbConnected) {
+      console.log("✓ Database ready, queries will work");
+    } else {
+      console.log("⚠ Database not available yet, but server will start");
+    }
+    
+    // Start listening regardless of DB status
+    const PORT = process.env.PORT || 5000;
+    const server = app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+    
+    return server;
+  } catch (error) {
+    console.error("Error starting server:", error.message);
+    // For Vercel, start server anyway
+    const PORT = process.env.PORT || 5000;
+    const server = app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT} (in fallback mode)`);
+    });
+    return server;
+  }
+};
+
+/* Start if running directly */
 if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
+  startServer();
 }
 
 /* ---------------- VERCEL EXPORT (IMPORTANT) ---------------- */
