@@ -177,8 +177,6 @@ const connectDB = async () => {
       retryWrites: true,
       w: "majority",
       appName: "rivera-server",
-      // Disable Mongoose's built-in connection buffering
-      bufferCommands: false,
     });
     
     const connectTime = Date.now() - startTime;
