@@ -4,10 +4,7 @@ const connectDB = require('../config/db');
 const getArticles = async (req, res) => {
   try {
     await connectDB();
-    const articles = await Article.find()
-      .sort({ title: 1 })
-      .maxTimeMS(30000)
-      .lean();
+    const articles = await Article.find().sort({ title: 1 });
     res.json({ articles });
   } catch (error) {
     console.error("Error fetching articles:", error.message);
@@ -20,9 +17,7 @@ const getArticleByName = async (req, res) => {
     await connectDB();
     const article = await Article.findOne({
       name: req.params.name.toLowerCase(),
-    })
-      .maxTimeMS(30000)
-      .lean();
+    });
 
     if (!article) {
       return res.status(404).json({ message: 'Article not found' });

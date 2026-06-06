@@ -6,9 +6,7 @@ const connectDB = require('../config/db');
 const getUsers = async (req, res) => {
   try {
     await connectDB();
-    const users = await User.find({}, '-password')
-      .maxTimeMS(30000)
-      .lean();
+    const users = await User.find({}, '-password');
     res.json({ users });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -70,8 +68,7 @@ const loginUser = async (req, res) => {
     await connectDB();
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email })
-      .maxTimeMS(30000);
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
