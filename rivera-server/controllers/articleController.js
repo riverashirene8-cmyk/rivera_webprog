@@ -36,7 +36,6 @@ const getArticleByName = async (req, res) => {
 
 const createArticle = async (req, res) => {
   try {
-    await connectDB();
     const name = String(req.body.name || '')
       .trim()
       .toLowerCase()
@@ -68,7 +67,6 @@ const createArticle = async (req, res) => {
 
 const updateArticle = async (req, res) => {
   try {
-    await connectDB();
     const name = String(req.body.name || '')
       .trim()
       .toLowerCase()
@@ -111,7 +109,6 @@ const updateArticle = async (req, res) => {
 
 const deleteArticle = async (req, res) => {
   try {
-    await connectDB();
     const article = await Article.findByIdAndDelete(req.params.id);
 
     if (!article) {

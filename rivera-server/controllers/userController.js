@@ -5,8 +5,7 @@ const connectDB = require('../config/db');
 
 const getUsers = async (req, res) => {
   try {
-    await connectDB();
-    const users = await User.find({}, '-password');
+    const users = await User.find({}, '-password').lean();
     res.json({ users });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -15,7 +14,6 @@ const getUsers = async (req, res) => {
 
 const createUser = async (req, res) => {
   try {
-    await connectDB();
     if (!req.body.password) {
       return res.status(400).json({ message: 'Password is required' });
     }
@@ -35,7 +33,6 @@ const createUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    await connectDB();
     if (req.body.password) {
       req.body.password = await bcrypt.hash(req.body.password, 10);
     }
@@ -54,7 +51,6 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
-    await connectDB();
     await User.findByIdAndDelete(req.params.id);
 
     res.json({ message: 'User deleted successfully' });
@@ -65,7 +61,6 @@ const deleteUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   try {
-    await connectDB();
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
