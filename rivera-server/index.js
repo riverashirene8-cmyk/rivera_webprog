@@ -30,9 +30,6 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-/* ---------------- PREFLIGHT ---------------- */
-app.options("*", cors(corsOptions));
-
 /* ---------------- TEST ROUTE ---------------- */
 app.get("/", (req, res) => {
   res.json({ message: "API is running 🚀" });
