@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+const dns = require("dns");
 
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
+
+const bcrypt = require("bcryptjs");
 // Single global connection (reuses connection across requests)
 let cachedConnection = null;
 
@@ -168,18 +171,16 @@ const connectDB = async () => {
     console.log("Connecting to MongoDB Atlas...");
     const startTime = Date.now();
     
-    const options = {
-      serverSelectionTimeoutMS: 30000,
-      connectTimeoutMS: 30000,
-      socketTimeoutMS: 30000,
-      family: 4,
-      maxPoolSize: 10,
-      minPoolSize: 2,
-      retryWrites: true,
-      w: "majority",
-      appName: "rivera-server",
-    };
-    
+   const options = {
+  serverSelectionTimeoutMS: 30000,
+  connectTimeoutMS: 30000,
+  socketTimeoutMS: 30000,
+  maxPoolSize: 10,
+  minPoolSize: 2,
+  retryWrites: true,
+  w: "majority",
+  appName: "rivera-server",
+};
     await mongoose.connect(atlasUri, options);
     
     const connectTime = Date.now() - startTime;
